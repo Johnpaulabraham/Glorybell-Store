@@ -3,12 +3,25 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="Glorybell Store is your one-stop e-commerce platform for premium fashion, lifestyle, and accessories. Shop with ease and enjoy a seamless shopping experience."
+		/>
+		<meta
+			name="keywords"
+			content="Glorybell Store, e-commerce, fashion store, online shopping, lifestyle, accessories, clothing, Nigeria online store"
+		/>
+		<meta name="author" content="Glorybell Store Team" />
 		<link
 			rel="shortcut icon"
-			href="./Img/Glorybell Logo.jpg"
+			href="./Img/Glorybell Logo.png"
 			type="image/x-icon"
 		/>
-		<title>Glorybell Store</title>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+		/>
+		<title>Glorybell Store - Discover styles</title>
 		<script src="https://cdn.tailwindcss.com"></script>
 	</head>
 	<body class="bg-[#F8F5F1] text-[#3A2F2D]">
@@ -24,15 +37,16 @@
 					<h1 class="text-2xl font-bold tracking-wide">Glorybell Store</h1>
 				</div>
 
-				<!-- Desktop Navigation -->
+				<!-- Navbar for Desktop -->
 				<nav class="hidden md:flex space-x-6 font-medium">
-					<a href="#" class="hover:text-[#6B4F4F]">Home</a>
-					<a href="#" class="hover:text-[#6B4F4F]">Shop</a>
-					<a href="#" class="hover:text-[#6B4F4F]">About</a>
-					<a href="#" class="hover:text-[#6B4F4F]">Contact</a>
+					<a href="/index.html" class="hover:text-[#6B4F4F]">Home</a>
+					<a href="./Pages/shop.html" class="hover:text-[#6B4F4F]">Shop</a>
+					<a href="./Pages/about.html" class="hover:text-[#6B4F4F]">About</a>
+					<a href="./Pages/contact.html" class="hover:text-[#6B4F4F]"
+						>Contact</a
+					>
 				</nav>
 
-				<!-- Search + Cart -->
 				<div class="hidden md:flex items-center space-x-4">
 					<input
 						type="text"
@@ -40,27 +54,31 @@
 						class="px-3 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3A2F2D]"
 					/>
 					<div class="relative">
-						<button class="relative">
-							🛒
-							<span
-								class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 rounded-full"
-								>0</span
-							>
-						</button>
+						<a href="./Pages/cart.html">
+							<button class="relative">
+								🛒
+								<span
+									class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 rounded-full"
+									>0</span
+								>
+							</button>
+						</a>
 					</div>
 				</div>
 
-				<!-- Hamburger (Mobile) -->
+				<!-- Hamburger -->
 				<button id="menu-btn" class="md:hidden focus:outline-none">☰</button>
 			</div>
 
-			<!-- Mobile Navigation -->
+			<!-- Responsive Navigation -->
 			<div id="menu" class="hidden md:hidden bg-[#F8F5F1] shadow-md">
 				<nav class="flex flex-col space-y-3 p-4 font-medium">
-					<a href="#" class="hover:text-[#6B4F4F]">Home</a>
-					<a href="#" class="hover:text-[#6B4F4F]">Shop</a>
-					<a href="#" class="hover:text-[#6B4F4F]">About</a>
-					<a href="#" class="hover:text-[#6B4F4F]">Contact</a>
+					<a href="/index.html" class="hover:text-[#6B4F4F]">Home</a>
+					<a href="./Pages/shop.html" class="hover:text-[#6B4F4F]">Shop</a>
+					<a href="./Pages/about.html" class="hover:text-[#6B4F4F]">About</a>
+					<a href="./Pages/contact.html" class="hover:text-[#6B4F4F]"
+						>Contact</a
+					>
 					<div class="flex items-center space-x-3 pt-2 border-t">
 						<input
 							type="text"
@@ -77,7 +95,9 @@
 		<section
 			class="bg-cover bg-center h-[70vh] flex items-center justify-center text-center"
 			style="
-				background-image: url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1500&q=80');
+				background-image: url('./Img/bg.jpg');
+				background-position: center;
+				background-size: cover;
 			"
 		>
 			<div class="bg-black bg-opacity-40 p-6 rounded-xl">
@@ -88,7 +108,7 @@
 					Shop the latest trends at Glorybell Store
 				</p>
 				<a
-					href="#shop"
+					href="./Pages/shop.html"
 					class="bg-[#3A2F2D] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#6B4F4F] transition"
 					>Shop Now</a
 				>
@@ -113,11 +133,13 @@
 						<p class="text-sm text-gray-600">Short description goes here.</p>
 						<div class="flex justify-between items-center mt-4">
 							<span class="font-bold">$49.99</span>
-							<button
-								class="bg-[#3A2F2D] text-white px-3 py-1 rounded-lg hover:bg-[#6B4F4F]"
-							>
-								Add to Cart
-							</button>
+							<a href="./Pages/cart.html">
+								<button
+									class="bg-[#3A2F2D] text-white px-3 py-1 rounded-lg hover:bg-[#6B4F4F]"
+								>
+									Add to Cart
+								</button>
+							</a>
 						</div>
 					</div>
 				</div>
@@ -135,11 +157,13 @@
 						<p class="text-sm text-gray-600">Short description goes here.</p>
 						<div class="flex justify-between items-center mt-4">
 							<span class="font-bold">$59.99</span>
-							<button
-								class="bg-[#3A2F2D] text-white px-3 py-1 rounded-lg hover:bg-[#6B4F4F]"
-							>
-								Add to Cart
-							</button>
+							<a href="./Pages/cart.html">
+								<button
+									class="bg-[#3A2F2D] text-white px-3 py-1 rounded-lg hover:bg-[#6B4F4F]"
+								>
+									Add to Cart
+								</button>
+							</a>
 						</div>
 					</div>
 				</div>
@@ -176,16 +200,59 @@
 		</section>
 
 		<!-- Footer -->
-		<footer class="bg-[#3A2F2D] text-white py-8">
-			<div
-				class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center"
-			>
-				<p>&copy; 2025 Glorybell Store. All Rights Reserved.</p>
-				<div class="flex space-x-4 mt-4 md:mt-0">
-					<a href="#" class="hover:text-gray-300">Facebook</a>
-					<a href="#" class="hover:text-gray-300">Instagram</a>
-					<a href="#" class="hover:text-gray-300">Twitter</a>
+		<footer class="bg-gray-900 text-gray-300 py-10">
+			<div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+				<!-- Contact Info -->
+				<div>
+					<h3 class="text-lg font-semibold text-white mb-4">Contact Us</h3>
+					<p class="mb-2">📍 123 Fashion Street, Abuja FCT - Nigieria</p>
+					<p class="mb-2">
+						📞 +234 908 015 5167 <br />
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +234 704 120 4329
+					</p>
+					<p class="mb-2">📧 support@glorybellstore.com</p>
 				</div>
+
+				<!-- Social Media -->
+				<div>
+					<h3 class="text-lg font-semibold text-white mb-4">Follow Us</h3>
+					<div class="flex space-x-4">
+						<a href="#" class="hover:text-white text-xl"
+							><i class="fab fa-facebook"></i
+						></a>
+						<a href="#" class="hover:text-white text-xl"
+							><i class="fab fa-instagram"></i
+						></a>
+						<a href="#" class="hover:text-white text-xl"
+							><i class="fab fa-twitter"></i
+						></a>
+						<a href="#" class="hover:text-white text-xl"
+							><i class="fab fa-linkedin"></i
+						></a>
+					</div>
+				</div>
+
+				<!-- Newsletter -->
+				<div>
+					<h3 class="text-lg font-semibold text-white mb-4">Stay Updated</h3>
+					<form class="flex">
+						<input
+							type="email"
+							placeholder="Enter your email"
+							class="w-full px-3 py-2 rounded-l-lg text-gray-900 focus:outline-none"
+						/>
+						<button
+							class="bg-yellow-500 text-white px-4 py-2 rounded-r-lg hover:bg-yellow-600"
+						>
+							Subscribe
+						</button>
+					</form>
+				</div>
+			</div>
+
+			<!-- Copyright -->
+			<div class="mt-10 text-center border-t border-gray-700 pt-6 text-md">
+				<p id="copyright"></p>
 			</div>
 		</footer>
 
@@ -197,6 +264,10 @@
 			btn.addEventListener("click", () => {
 				menu.classList.toggle("hidden");
 			});
+
+			document.getElementById(
+				"copyright"
+			).textContent = `© ${new Date().getFullYear()} Glorybell Store. All Rights Reserved.`;
 		</script>
 	</body>
 </html>
