@@ -19,7 +19,7 @@
 		/>
 		<link
 			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 		/>
 		<title>Shop - Glorybell Store</title>
 		<script src="https://cdn.tailwindcss.com"></script>
@@ -54,9 +54,10 @@
 						class="px-3 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3A2F2D]"
 					/>
 					<div class="relative">
-						<button class="relative">
+						<button class="relative" id="cart-btn">
 							🛒
 							<span
+								id="cart-count"
 								class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 rounded-full"
 								>0</span
 							>
@@ -88,9 +89,11 @@
 				</nav>
 			</div>
 		</header>
+
 		<!-- Hero -->
 		<section
-			class="bg-gradient-to-r from-purple-600 to-indigo-700 py-12 text-center text-white"
+			class="py-12 text-center text-white"
+			style="background-color: rgb(26, 24, 24)"
 		>
 			<h1 class="text-4xl md:text-5xl font-bold mb-4">Our Products</h1>
 			<p class="text-lg md:text-xl">
@@ -107,6 +110,7 @@
 				<!-- Products will be injected dynamically here -->
 			</div>
 		</main>
+
 		<!-- Footer -->
 		<footer class="bg-gray-900 text-gray-300 py-10">
 			<div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -164,15 +168,84 @@
 			</div>
 		</footer>
 
-		<!-- JavaScript for Hamburger -->
+		<!-- JavaScript -->
 		<script>
 			const btn = document.getElementById("menu-btn");
 			const menu = document.getElementById("menu");
+			const productsContainer = document.getElementById("products");
+			const cartCount = document.getElementById("cart-count");
 
+			let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+			// Toggle Menu
 			btn.addEventListener("click", () => {
 				menu.classList.toggle("hidden");
 			});
 
+			// Update Cart Count
+			function updateCartCount() {
+				cartCount.textContent = cart.reduce(
+					(sum, item) => sum + item.quantity,
+					0
+				);
+			}
+
+			// Add to Cart
+			function addToCart(product) {
+				const existing = cart.find((item) => item.id === product.id);
+				if (existing) {
+					existing.quantity += 1;
+				} else {
+					cart.push({ ...product, quantity: 1 });
+				}
+				localStorage.setItem("cart", JSON.stringify(cart));
+				updateCartCount();
+			}
+
+			// Fetch and Display Products
+			async function fetchProducts() {
+				try {
+					const res = await fetch("https://fakestoreapi.com/products");
+					const products = await res.json();
+
+					productsContainer.innerHTML = products
+						.map(
+							(product) => `
+						<div class="bg-white rounded-lg shadow-md overflow-hidden flex flex-col">
+							<img src="${product.image}" alt="${
+								product.title
+							}" class="h-48 w-full object-contain p-4">
+							<div class="p-4 flex-1 flex flex-col">
+								<h2 class="font-semibold text-lg mb-2 line-clamp-2">${product.title}</h2>
+								<p class="text-gray-600 text-sm flex-1 mb-3 line-clamp-3">${
+									product.description
+								}</p>
+								<div class="flex justify-between items-center">
+									<span class="text-xl font-bold text-[#6B4F4F]">$${product.price.toFixed(
+										2
+									)}</span>
+									<button 
+										class="bg-[#6B4F4F] hover:bg-[#3A2F2D] text-white px-4 py-2 rounded-lg"
+										onclick='addToCart(${JSON.stringify(product)})'>
+										Add to Cart
+									</button>
+								</div>
+							</div>
+						</div>
+					`
+						)
+						.join("");
+				} catch (error) {
+					productsContainer.innerHTML = `<p class="text-red-500">Failed to load products. Please try again.</p>`;
+					console.error(error);
+				}
+			}
+
+			// Init
+			updateCartCount();
+			fetchProducts();
+
+			// Copyright
 			document.getElementById(
 				"copyright"
 			).textContent = `© ${new Date().getFullYear()} Glorybell Store. All Rights Reserved.`;

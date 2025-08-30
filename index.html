@@ -58,6 +58,7 @@
 							<button class="relative">
 								🛒
 								<span
+									id="cart-count"
 									class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 rounded-full"
 									>0</span
 								>
@@ -94,11 +95,7 @@
 		<!-- Hero Section -->
 		<section
 			class="bg-cover bg-center h-[70vh] flex items-center justify-center text-center"
-			style="
-				background-image: url('./Img/bg.jpg');
-				background-position: center;
-				background-size: cover;
-			"
+			style="background-image: url('./Img/bg.jpg')"
 		>
 			<div class="bg-black bg-opacity-40 p-6 rounded-xl">
 				<h2 class="text-4xl md:text-6xl font-bold text-white mb-4">
@@ -118,55 +115,11 @@
 		<!-- Featured Products -->
 		<section id="shop" class="py-16 container mx-auto px-6">
 			<h3 class="text-3xl font-bold text-center mb-10">Featured Products</h3>
-			<div class="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-				<!-- Product Card Example -->
-				<div
-					class="bg-white rounded-xl shadow-md overflow-hidden hover:scale-105 transition"
-				>
-					<img
-						src="https://via.placeholder.com/300"
-						alt="Product"
-						class="w-full h-48 object-cover"
-					/>
-					<div class="p-4">
-						<h4 class="font-semibold text-lg">Product Name</h4>
-						<p class="text-sm text-gray-600">Short description goes here.</p>
-						<div class="flex justify-between items-center mt-4">
-							<span class="font-bold">$49.99</span>
-							<a href="./Pages/cart.html">
-								<button
-									class="bg-[#3A2F2D] text-white px-3 py-1 rounded-lg hover:bg-[#6B4F4F]"
-								>
-									Add to Cart
-								</button>
-							</a>
-						</div>
-					</div>
-				</div>
-				<!-- Duplicate product cards -->
-				<div
-					class="bg-white rounded-xl shadow-md overflow-hidden hover:scale-105 transition"
-				>
-					<img
-						src="https://via.placeholder.com/300"
-						alt="Product"
-						class="w-full h-48 object-cover"
-					/>
-					<div class="p-4">
-						<h4 class="font-semibold text-lg">Product Name</h4>
-						<p class="text-sm text-gray-600">Short description goes here.</p>
-						<div class="flex justify-between items-center mt-4">
-							<span class="font-bold">$59.99</span>
-							<a href="./Pages/cart.html">
-								<button
-									class="bg-[#3A2F2D] text-white px-3 py-1 rounded-lg hover:bg-[#6B4F4F]"
-								>
-									Add to Cart
-								</button>
-							</a>
-						</div>
-					</div>
-				</div>
+			<div
+				id="featured-products"
+				class="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+			>
+				<!-- Products will be loaded dynamically -->
 			</div>
 		</section>
 
@@ -174,27 +127,17 @@
 		<section class="py-16 bg-[#FFF]">
 			<div class="container mx-auto px-6">
 				<h3 class="text-3xl font-bold text-center mb-10">Shop by Category</h3>
-				<div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-					<div
-						class="bg-[#F8F5F1] rounded-lg shadow hover:scale-105 transition p-8 text-center"
-					>
-						<h4 class="font-semibold text-xl">Men</h4>
-					</div>
-					<div
-						class="bg-[#F8F5F1] rounded-lg shadow hover:scale-105 transition p-8 text-center"
-					>
-						<h4 class="font-semibold text-xl">Women</h4>
-					</div>
-					<div
-						class="bg-[#F8F5F1] rounded-lg shadow hover:scale-105 transition p-8 text-center"
-					>
-						<h4 class="font-semibold text-xl">Accessories</h4>
-					</div>
-					<div
-						class="bg-[#F8F5F1] rounded-lg shadow hover:scale-105 transition p-8 text-center"
-					>
-						<h4 class="font-semibold text-xl">Shoes</h4>
-					</div>
+				<div
+					id="categories"
+					class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+				>
+					<!-- Categories will load dynamically -->
+				</div>
+				<div
+					id="category-products"
+					class="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-10"
+				>
+					<!-- Products by category will load here -->
 				</div>
 			</div>
 		</section>
@@ -256,18 +199,136 @@
 			</div>
 		</footer>
 
-		<!-- JavaScript for Hamburger -->
+		<!-- JavaScript -->
 		<script>
 			const btn = document.getElementById("menu-btn");
 			const menu = document.getElementById("menu");
+			const cartCount = document.getElementById("cart-count");
+			const categoriesContainer = document.getElementById("categories");
+			const categoryProductsContainer =
+				document.getElementById("category-products");
 
 			btn.addEventListener("click", () => {
 				menu.classList.toggle("hidden");
 			});
 
+			// Dynamically update year
 			document.getElementById(
 				"copyright"
 			).textContent = `© ${new Date().getFullYear()} Glorybell Store. All Rights Reserved.`;
+
+			// Add to Cart
+			function addToCart(product) {
+				let cart = JSON.parse(localStorage.getItem("cart")) || [];
+				const existing = cart.find((item) => item.id === product.id);
+				if (existing) {
+					existing.quantity += 1;
+				} else {
+					cart.push({ ...product, quantity: 1 });
+				}
+				localStorage.setItem("cart", JSON.stringify(cart));
+				updateCartCount();
+				alert("Added to cart!");
+			}
+
+			// Update Cart Count
+			function updateCartCount() {
+				const cart = JSON.parse(localStorage.getItem("cart")) || [];
+				const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+				cartCount.textContent = total;
+			}
+
+			// Load Featured Products
+			async function loadFeaturedProducts() {
+				const res = await fetch("https://fakestoreapi.com/products?limit=8");
+				const products = await res.json();
+				const container = document.getElementById("featured-products");
+				container.innerHTML = products
+					.map(
+						(product) => `
+					<div class="bg-white rounded-xl shadow-md overflow-hidden hover:scale-105 transition">
+						<img src="${product.image}" alt="${
+							product.title
+						}" class="w-full h-48 object-contain p-4"/>
+						<div class="p-4">
+							<h4 class="font-semibold text-lg truncate">${product.title}</h4>
+							<p class="text-sm text-gray-600">${product.category}</p>
+							<div class="flex justify-between items-center mt-4">
+								<span class="font-bold">$${product.price}</span>
+								<button onclick='addToCart(${JSON.stringify(
+									product
+								)})' class="bg-[#3A2F2D] text-white px-3 py-1 rounded-lg hover:bg-[#6B4F4F]">
+									Add to Cart
+								</button>
+							</div>
+						</div>
+					</div>
+				`
+					)
+					.join("");
+			}
+
+			// Fetch categories from API
+			async function fetchCategories() {
+				try {
+					const res = await fetch(
+						"https://fakestoreapi.com/products/categories"
+					);
+					const categories = await res.json();
+
+					// Render category cards
+					categoriesContainer.innerHTML = categories
+						.map(
+							(category) => `
+							<div 
+								onclick="fetchCategoryProducts('${category}')" 
+								class="cursor-pointer bg-[#f5f5f5] p-6 rounded-xl shadow-md text-center hover:bg-[#EEE] transition"
+							>
+								<h4 class="text-lg font-semibold capitalize">${category}</h4>
+							</div>
+							`
+						)
+						.join("");
+				} catch (error) {
+					console.error("Error fetching categories:", error);
+				}
+			}
+
+			// Fetch products by category
+			async function fetchCategoryProducts(category) {
+				try {
+					const res = await fetch(
+						`https://fakestoreapi.com/products/category/${category}`
+					);
+					const products = await res.json();
+
+					// Render products
+					categoryProductsContainer.innerHTML = products
+						.map(
+							(product) => `
+							<div class="bg-white p-4 rounded-xl shadow hover:shadow-lg transition">
+								<img src="${product.image}" alt="${
+								product.title
+							}" class="w-full h-40 object-contain mb-4">
+								<h4 class="font-semibold text-sm mb-2 line-clamp-2">${product.title}</h4>
+								<p class="text-gray-600 mb-2">$${product.price.toFixed(2)}</p>
+								<button onclick='addToCart(${JSON.stringify(product)})' 
+									class="w-full bg-[#3A2F2D] text-white py-2 rounded-lg hover:bg-[#6B4F4F] transition">
+									Add to Cart
+								</button>
+							</div>
+							`
+						)
+						.join("");
+				} catch (error) {
+					console.error("Error fetching products by category:", error);
+				}
+			}
+
+			// Init
+			loadFeaturedProducts();
+			fetchCategories();
+			updateCartCount();
 		</script>
 	</body>
 </html>
