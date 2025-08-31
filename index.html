@@ -86,7 +86,16 @@
 							placeholder="Search..."
 							class="w-full px-3 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3A2F2D]"
 						/>
-						<button>🛒</button>
+						<a href="./Pages/cart.html">
+							<button class="relative">
+								🛒
+								<span
+									id="cart-count"
+									class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 rounded-full"
+									>0</span
+								>
+							</button>
+						</a>
 					</div>
 				</nav>
 			</div>
@@ -255,9 +264,10 @@
 							<p class="text-sm text-gray-600">${product.category}</p>
 							<div class="flex justify-between items-center mt-4">
 								<span class="font-bold">$${product.price}</span>
-								<button onclick='addToCart(${JSON.stringify(
-									product
-								)})' class="bg-[#3A2F2D] text-white px-3 py-1 rounded-lg hover:bg-[#6B4F4F]">
+								<button 
+									class="bg-[#3A2F2D] text-white px-3 py-1 rounded-lg hover:bg-[#6B4F4F]"
+									data-product='${JSON.stringify(product)}'
+									onclick="handleAddToCart(this)">
 									Add to Cart
 								</button>
 							</div>
@@ -268,7 +278,7 @@
 					.join("");
 			}
 
-			// Fetch categories from API
+			// Fetch categories
 			async function fetchCategories() {
 				try {
 					const res = await fetch(
@@ -276,7 +286,6 @@
 					);
 					const categories = await res.json();
 
-					// Render category cards
 					categoriesContainer.innerHTML = categories
 						.map(
 							(category) => `
@@ -286,9 +295,14 @@
 							>
 								<h4 class="text-lg font-semibold capitalize">${category}</h4>
 							</div>
-							`
+						`
 						)
 						.join("");
+
+					// Load first category by default
+					if (categories.length > 0) {
+						fetchCategoryProducts(categories[0]);
+					}
 				} catch (error) {
 					console.error("Error fetching categories:", error);
 				}
@@ -302,7 +316,6 @@
 					);
 					const products = await res.json();
 
-					// Render products
 					categoryProductsContainer.innerHTML = products
 						.map(
 							(product) => `
@@ -312,17 +325,25 @@
 							}" class="w-full h-40 object-contain mb-4">
 								<h4 class="font-semibold text-sm mb-2 line-clamp-2">${product.title}</h4>
 								<p class="text-gray-600 mb-2">$${product.price.toFixed(2)}</p>
-								<button onclick='addToCart(${JSON.stringify(product)})' 
-									class="w-full bg-[#3A2F2D] text-white py-2 rounded-lg hover:bg-[#6B4F4F] transition">
+								<button 
+									class="w-full bg-[#3A2F2D] text-white py-2 rounded-lg hover:bg-[#6B4F4F] transition"
+									data-product='${JSON.stringify(product)}'
+									onclick="handleAddToCart(this)">
 									Add to Cart
 								</button>
 							</div>
-							`
+						`
 						)
 						.join("");
 				} catch (error) {
 					console.error("Error fetching products by category:", error);
 				}
+			}
+
+			// Safe addToCart handler
+			function handleAddToCart(button) {
+				const product = JSON.parse(button.getAttribute("data-product"));
+				addToCart(product);
 			}
 
 			// Init

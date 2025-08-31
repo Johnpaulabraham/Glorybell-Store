@@ -54,13 +54,16 @@
 						class="px-3 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3A2F2D]"
 					/>
 					<div class="relative">
-						<button class="relative">
-							🛒
-							<span
-								class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 rounded-full"
-								>0</span
-							>
-						</button>
+						<a href="../Pages/cart.html">
+							<button class="relative">
+								🛒
+								<span
+									id="cart-count"
+									class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 rounded-full"
+									>0</span
+								>
+							</button>
+						</a>
 					</div>
 				</div>
 
@@ -83,14 +86,24 @@
 							placeholder="Search..."
 							class="w-full px-3 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3A2F2D]"
 						/>
-						<button>🛒</button>
+						<a href="../Pages/cart.html">
+							<button class="relative">
+								🛒
+								<span
+									id="cart-count"
+									class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 rounded-full"
+									>0</span
+								>
+							</button>
+						</a>
 					</div>
 				</nav>
 			</div>
 		</header>
+
 		<!-- Main Cart Section -->
 		<main class="container mx-auto py-12 px-6">
-			<h2 class="text-3xl font-bold mb-8 text-[#6A1B9A]">Shopping Cart</h2>
+			<h2 class="text-3xl font-bold mb-8 text-[#000000]">Shopping Cart</h2>
 
 			<div class="grid lg:grid-cols-3 gap-8">
 				<!-- Cart Items -->
@@ -115,12 +128,13 @@
 					</div>
 					<a
 						href="checkout.html"
-						class="block mt-6 bg-[#6A1B9A] hover:bg-[#4A148C] text-white text-center font-semibold py-3 px-4 rounded-xl transition"
+						class="block mt-6 bg-[#000000] hover:bg-[#000000] text-white text-center font-semibold py-3 px-4 rounded-xl transition"
 						>Proceed to Checkout</a
 					>
 				</aside>
 			</div>
 		</main>
+
 		<!-- Footer -->
 		<footer class="bg-gray-900 text-gray-300 py-10">
 			<div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -178,19 +192,99 @@
 			</div>
 		</footer>
 
-		<!-- JavaScript for Hamburger -->
+		<!-- JavaScript -->
 		<script>
+			// Mobile Menu
 			const btn = document.getElementById("menu-btn");
 			const menu = document.getElementById("menu");
-
 			btn.addEventListener("click", () => {
 				menu.classList.toggle("hidden");
 			});
 
+			// Copyright Year
 			document.getElementById(
 				"copyright"
 			).textContent = `© ${new Date().getFullYear()} Glorybell Store. All Rights Reserved.`;
+
+			// Cart Functionality
+			const cart = JSON.parse(localStorage.getItem("cart")) || [];
+			const cartItemsContainer = document.getElementById("cart-items");
+			const subtotalEl = document.getElementById("subtotal");
+			const shippingEl = document.getElementById("shipping");
+			const totalEl = document.getElementById("total");
+			const cartCountEls = document.querySelectorAll("#cart-count");
+
+			function renderCart() {
+				cartItemsContainer.innerHTML = "";
+				let subtotal = 0;
+
+				if (cart.length === 0) {
+					cartItemsContainer.innerHTML =
+						'<p class="text-gray-600">Your cart is empty.</p>';
+				}
+
+				cart.forEach((item, index) => {
+					const itemTotal = item.price * item.quantity;
+					subtotal += itemTotal;
+
+					const div = document.createElement("div");
+					div.className =
+						"flex items-center justify-between bg-white p-4 rounded-xl shadow";
+					div.innerHTML = `
+						<div class="flex items-center space-x-4">
+							<img src="${item.image}" alt="${
+						item.title
+					}" class="w-20 h-20 object-cover rounded-lg">
+							<div>
+								<h4 class="font-semibold">${item.title}</h4>
+								<p class="text-sm text-gray-500">$${item.price.toFixed(2)}</p>
+							</div>
+						</div>
+						<div class="flex items-center space-x-4">
+							<input type="number" min="1" value="${item.quantity}" data-index="${index}"
+								class="w-16 border rounded-lg text-center qty-input">
+							<p class="w-20 text-right">$${itemTotal.toFixed(2)}</p>
+							<button data-index="${index}" class="text-red-500 hover:underline delete-btn">Remove</button>
+						</div>
+					`;
+					cartItemsContainer.appendChild(div);
+				});
+
+				// Update summary
+				subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+				const shipping = cart.length > 0 ? 10 : 0;
+				shippingEl.textContent = `$${shipping.toFixed(2)}`;
+				totalEl.textContent = `$${(subtotal + shipping).toFixed(2)}`;
+
+				// Update cart count everywhere
+				cartCountEls.forEach((el) => (el.textContent = cart.length));
+
+				// Save back to localStorage
+				localStorage.setItem("cart", JSON.stringify(cart));
+
+				// Quantity change
+				document.querySelectorAll(".qty-input").forEach((input) => {
+					input.addEventListener("change", (e) => {
+						const index = e.target.dataset.index;
+						const newQty = parseInt(e.target.value);
+						if (newQty > 0) {
+							cart[index].quantity = newQty;
+							renderCart();
+						}
+					});
+				});
+
+				// Delete item
+				document.querySelectorAll(".delete-btn").forEach((btn) => {
+					btn.addEventListener("click", (e) => {
+						const index = e.target.dataset.index;
+						cart.splice(index, 1);
+						renderCart();
+					});
+				});
+			}
+
+			renderCart();
 		</script>
-		<script src="../script/script.js"></script>
 	</body>
 </html>
